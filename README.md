@@ -103,5 +103,5 @@ df = pd.read_sql(query, conn)
 
 ## 🙋‍♀️ Author
 
-**Roāshā (Pkhoei)**  
+**(Pkhoei)**  
 Exploring data science, machine learning, and data visualization.
