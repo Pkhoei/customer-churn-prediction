@@ -1,18 +1,16 @@
-# 📊 Customer Churn Prediction
-
-A complete end-to-end project to analyze and visualize customer churn behavior using **SQL**, **Python**, and **Power BI**.
-
----
-
-## 🚀 Project Overview
-
+# 📉 Customer Churn Prediction
 
 This project explores customer churn behavior in a telecom dataset and builds end-to-end visual analytics using SQL, Python, and Power BI.
 
+---
 
-- Exploratory Data Analysis using SQL (SQLite)
-- Executing queries programmatically in Python
-- Visualizing data insights in Power BI
+## 🚀 Project Objectives
+
+- Analyze churn-related patterns using SQL (via SQLite).
+- Execute queries and process data in Python using `pandas` and `sqlite3`.
+- Design interactive dashboards and KPIs using Power BI.
+- Provide actionable insights for business stakeholders.
+- Lay the foundation for future machine learning modeling (coming soon).
 
 ---
 
@@ -21,59 +19,58 @@ This project explores customer churn behavior in a telecom dataset and builds en
 ```
 customer-churn-prediction/
 │
-├── data/                     # Original data files
-├── images/                   # Exported charts and dashboards
-├── models/                   # (Optional) Future model training
+├── data/                     # Original dataset
+├── images/                   # Charts and Power BI exports
+├── models/                   # Placeholder for ML models
 ├── notebooks/
-│   └── 01_initial_analysis.ipynb  # Python notebook for SQL + Pandas analysis
-├── output/                   # Query results exported as CSV
+│   └── 01_initial_analysis.ipynb
+├── output/                   # Exported CSVs from SQL queries
 │   ├── avg_monthly_charge.csv
 │   └── churn_by_contract.csv
 ├── sql/
-│   ├── churn_project.db      # SQLite database
-│   ├── create_tables.sql     # Table creation queries
-│   └── queries.sql           # All SQL analysis queries
-├── .gitignore
-└── README.md                 # You are here 🚀
+│   ├── churn_project.db
+│   ├── create_tables.sql
+│   └── queries.sql
+└── README.md
 ```
 
 ---
 
 ## 🛠️ Tools & Technologies
 
-- **SQLite** – for storing and querying data  
-- **Python (pandas + sqlite3)** – for running queries and exporting results  
-- **Power BI** – for dashboard and data storytelling  
-- **VS Code + Git** – for development and version control  
+- **SQLite** – for raw data storage and SQL-based querying
+- **Python** – `pandas`, `sqlite3` for processing and exporting insights
+- **Power BI** – for dashboard creation and business storytelling
+- **VS Code + Git** – development environment and version control
 
 ---
 
-## 📌 Key Insights
+## 📊 Key Insights
 
-- 📈 **Average Monthly Charge**: 64.76  
-- 🔍 Churn Rate is significantly higher for **Month-to-Month** contracts  
-- ✅ Final dashboards created and shared in Power BI
-
----
-
-## 🔗 How Everything is Connected
-
-| Step         | Tool        | Description |
-|--------------|-------------|-------------|
-| Data Import  | SQLite      | Raw data imported into a `.db` file |
-| Analysis     | SQL         | Queries written in DB Browser & run in Python |
-| Export       | Python      | Results saved as `.csv` using `pandas` |
-| Dashboard    | Power BI    | CSVs loaded for visual analysis |
+- 📈 **Average Monthly Charge:** 64.76  
+- 🔍 **Churn Rate:** Much higher in **Month-to-Month** contract customers  
+- ✅ Final Power BI dashboards contain KPIs, filters, and contract-based churn analysis
 
 ---
 
-## 📎 Example SQL Query
+## 🔗 End-to-End Flow
+
+| Step           | Tool     | Description                            |
+|----------------|----------|----------------------------------------|
+| Data Import    | SQLite   | Raw data imported into `.db` file      |
+| Analysis       | SQL      | Queries written, tested, and optimized |
+| Export         | Python   | Results saved as CSV with pandas       |
+| Visualization  | Power BI | Dashboards and KPIs designed           |
+
+---
+
+## 📎 Sample SQL Query
 
 ```sql
 SELECT AVG(MonthlyCharges) AS avg_monthly_charge FROM telco_data;
 ```
 
-## 📎 Example Python Snippet
+## 📎 Sample Python Code
 
 ```python
 import sqlite3
@@ -86,24 +83,28 @@ df = pd.read_sql(query, conn)
 
 ---
 
-## 📊 Power BI
+## 📊 Power BI Dashboard Highlights
 
-- Imported both raw and exported CSVs
-- Created KPI cards, bar charts, and interactive filters
+- Imported both raw and transformed CSV files
+- Created KPI cards, bar/column charts, and interactive filters
+- Designed layout to highlight contract types and churn drivers
 
 ---
 
-## ✅ Status
+## ✅ Project Status
 
-- [x] Data Prepared
-- [x] SQL Queries Executed
-- [x] Python Notebook Complete
-- [x] Power BI Dashboard Built
-- [ ] Model Training (coming soon)
+- [x] Data Cleaned & Prepared  
+- [x] SQL Analysis Completed  
+- [x] Python Integration Done  
+- [x] Power BI Dashboard Built  
+- [ ] Machine Learning Modeling (Coming Soon)
 
 ---
 
 ## 🙋‍♀️ Author
 
-**(Pkhoei)**  
-Exploring data science, machine learning, and data visualization.
+**Pkhoei** –  
+Passionate about data science, analytics, and building visual stories from raw numbers.  
+➡️ [GitHub](https://github.com/Pkhoei) | [LinkedIn](https://www.linkedin.com/in/parisa-khoei/)
+
+---
