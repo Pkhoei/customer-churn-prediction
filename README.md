@@ -6,7 +6,9 @@ A complete end-to-end project to analyze and visualize customer churn behavior u
 
 ## 🚀 Project Overview
 
-This project focuses on understanding customer churn patterns and building data visualizations from a telecom dataset. The process includes:
+
+This project explores customer churn behavior in a telecom dataset and builds end-to-end visual analytics using SQL, Python, and Power BI.
+
 
 - Exploratory Data Analysis using SQL (SQLite)
 - Executing queries programmatically in Python
