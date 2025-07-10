@@ -64,23 +64,6 @@ customer-churn-prediction/
 
 ---
 
-## 📎 Sample SQL Query
-
-```sql
-SELECT AVG(MonthlyCharges) AS avg_monthly_charge FROM telco_data;
-```
-
-## 📎 Sample Python Code
-
-```python
-import sqlite3
-import pandas as pd
-
-conn = sqlite3.connect("sql/churn_project.db")
-query = "SELECT * FROM telco_data"
-df = pd.read_sql(query, conn)
-```
-
 ---
 
 ## 📊 Power BI Dashboard Highlights
