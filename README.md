@@ -35,10 +35,12 @@ customer-churn-prediction/
 
 ## 🛠️ Tools & Technologies
 
-- **SQLite** – for raw data storage and SQL-based querying
-- **Python** – `pandas`, `sqlite3` for processing and exporting insights
-- **Power BI** – for dashboard creation and business storytelling
-- **VS Code + Git** – development environment and version control
+- **Python** – data cleaning, exploratory analysis, and preprocessing
+- **pandas** – data manipulation and analysis
+- **Matplotlib / Seaborn** – data visualization
+- **scikit-learn** – machine learning modeling and evaluation (next phase)
+- **Jupyter Notebook** – analysis and experimentation
+- **Git + GitHub** – version control and project documentation
 
 ---
 
