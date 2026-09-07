@@ -5,13 +5,14 @@ This project analyzes customer churn behavior in a telecom dataset and explores 
 
 ---
 
+
 ## 🚀 Project Objectives
 
-- Analyze churn-related patterns using SQL (via SQLite).
-- Execute queries and process data in Python using `pandas` and `sqlite3`.
-- Design interactive dashboards and KPIs using Power BI.
-- Provide actionable insights for business stakeholders.
-- Lay the foundation for future machine learning modeling (coming soon).
+- Explore customer characteristics and churn patterns through EDA.
+- Identify key factors associated with customer churn.
+- Analyze customer behavior using Python and SQL.
+- Visualize churn patterns and business-relevant insights.
+- Develop and evaluate machine learning models for churn prediction in the next phase.
 
 ---
 
