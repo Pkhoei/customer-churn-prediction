@@ -43,7 +43,19 @@ customer-churn-prediction/
 - **Git + GitHub** – version control and project documentation
 
 ---
+## Exploratory Data Analysis
 
+The dataset contains 7,032 customer records after data cleaning.  
+The target variable shows a moderate class imbalance: approximately 73% of customers were retained, while 27% churned.
+
+This imbalance is important to consider during model evaluation, particularly when selecting metrics such as precision, recall, F1-score, and ROC-AUC.
+---
+
+### Customer Churn Distribution
+
+![Customer Churn Distribution](images/churn_distribution.png)
+
+---
 ## 📊 Key Insights
 
 - 📈 **Average Monthly Charge:** 64.76  
