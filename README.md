@@ -61,12 +61,4 @@ customer-churn-prediction/
 - [ ] Machine learning modeling
 - [ ] Model evaluation
 
----
 
-## 🙋‍♀️ Author
-
-Pkhoei
-Data Analytics & Machine Learning
-GitHub | LinkedIn
-
----
