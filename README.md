@@ -48,38 +48,18 @@ customer-churn-prediction/
 
 - 📈 **Average Monthly Charge:** 64.76  
 - 🔍 **Churn Rate:** Much higher in **Month-to-Month** contract customers  
-- ✅ Final Power BI dashboards contain KPIs, filters, and contract-based churn analysis
 
 ---
 
-## 🔗 End-to-End Flow
-
-| Step           | Tool     | Description                            |
-|----------------|----------|----------------------------------------|
-| Data Import    | SQLite   | Raw data imported into `.db` file      |
-| Analysis       | SQL      | Queries written, tested, and optimized |
-| Export         | Python   | Results saved as CSV with pandas       |
-| Visualization  | Power BI | Dashboards and KPIs designed           |
-
----
-
----
-
-## 📊 Power BI Dashboard Highlights
-
-- Imported both raw and transformed CSV files
-- Created KPI cards, bar/column charts, and interactive filters
-- Designed layout to highlight contract types and churn drivers
-
----
 
 ## ✅ Project Status
 
-- [x] Data Cleaned & Prepared  
-- [x] SQL Analysis Completed  
-- [x] Python Integration Done  
-- [x] Power BI Dashboard Built  
-- [ ] Machine Learning Modeling (Coming Soon)
+- [x] Dataset added
+- [x] Initial exploratory analysis
+- [ ] Data cleaning & preprocessing
+- [ ] Extended exploratory data analysis
+- [ ] Machine learning modeling
+- [ ] Model evaluation
 
 ---
 
