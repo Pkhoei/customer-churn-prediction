@@ -1,6 +1,7 @@
 # 📉 Customer Churn Prediction
 
-This project explores customer churn behavior in a telecom dataset and builds end-to-end visual analytics using SQL, Python, and Power BI.
+This project analyzes customer churn behavior in a telecom dataset and explores the factors associated with customer attrition using Python, SQL, and data visualization. The next phase will extend the analysis toward machine learning–based churn prediction.
+
 
 ---
 
