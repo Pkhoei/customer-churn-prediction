@@ -65,8 +65,8 @@ customer-churn-prediction/
 
 ## 🙋‍♀️ Author
 
-**Pkhoei** –  
-Passionate about data science, analytics, and building visual stories from raw numbers.  
-➡️ [GitHub](https://github.com/Pkhoei) | [LinkedIn](https://www.linkedin.com/in/parisa-khoei/)
+Pkhoei
+Data Analytics & Machine Learning
+GitHub | LinkedIn
 
 ---
