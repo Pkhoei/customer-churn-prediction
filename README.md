@@ -21,18 +21,13 @@ This project analyzes customer churn behavior in a telecom dataset and explores 
 ```
 customer-churn-prediction/
 │
-├── data/                     # Original dataset
-├── images/                   # Charts and Power BI exports
-├── models/                   # Placeholder for ML models
+├── data/
+│   └── telco_customer_churn.csv     # Original dataset
+│
 ├── notebooks/
-│   └── 01_initial_analysis.ipynb
-├── output/                   # Exported CSVs from SQL queries
-│   ├── avg_monthly_charge.csv
-│   └── churn_by_contract.csv
-├── sql/
-│   ├── churn_project.db
-│   ├── create_tables.sql
-│   └── queries.sql
+│   └── 01_initial_analysis.ipynb    # Initial exploratory analysis
+│
+├── .gitignore
 └── README.md
 ```
 
