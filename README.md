@@ -1,18 +1,42 @@
 # 📉 Customer Churn Prediction
 
-This project analyzes customer churn behavior in a telecom dataset and explores the factors associated with customer attrition using Python, SQL, and data visualization. The next phase will extend the analysis toward machine learning–based churn prediction.
+## Project Overview
 
+This project analyzes customer churn in a telecommunications dataset and develops machine learning models to identify customers at risk of leaving.
 
----
+The project combines exploratory data analysis, preprocessing, predictive modeling, model evaluation, and business-oriented interpretation. Particular attention is given to recall because failing to identify an actual churner may be more costly than contacting a customer who would otherwise remain.
 
+The final selected model is a **Balanced Logistic Regression**, which identifies **79.7% of actual churners** while maintaining a ROC-AUC of **0.835**.
 
-## 🚀 Project Objectives
+## 🎯 Business Problem
 
-- Explore customer characteristics and churn patterns through EDA.
-- Identify key factors associated with customer churn.
-- Analyze customer behavior using Python and SQL.
-- Visualize churn patterns and business-relevant insights.
-- Develop and evaluate machine learning models for churn prediction in the next phase.
+Customer churn directly affects recurring revenue and customer acquisition costs. The objective of this project is not only to predict churn, but also to identify patterns that can support targeted customer-retention strategies.
+
+The analysis focuses on three questions:
+
+- Which customers are most likely to churn?
+- Which customer characteristics are most strongly associated with predicted churn?
+- How can the model support practical retention decisions?
+
+## 🤖 Machine Learning Results
+
+Three classification models were evaluated:
+
+| Model | Accuracy | Precision | Recall | F1-score | ROC-AUC |
+|---|---:|---:|---:|---:|---:|
+| Logistic Regression | 0.804 | 0.648 | 0.575 | 0.609 | 0.836 |
+| Random Forest | 0.787 | 0.629 | 0.489 | 0.550 | 0.820 |
+| **Balanced Logistic Regression** | **0.726** | **0.491** | **0.797** | **0.608** | **0.835** |
+
+### Final Model Selection
+
+**Balanced Logistic Regression** was selected as the preferred model.
+
+Although standard Logistic Regression achieved higher accuracy and precision, class weighting increased churn recall from **57.5% to 79.7%**.
+
+The selected model correctly identified **298 of 374 actual churners**, reducing false negatives from **159 to 76**.
+
+This trade-off is appropriate for a customer-retention use case where identifying a larger proportion of at-risk customers is prioritized.
 
 ---
 
@@ -22,10 +46,17 @@ This project analyzes customer churn behavior in a telecom dataset and explores 
 customer-churn-prediction/
 │
 ├── data/
-│   └── telco_customer_churn.csv     # Original dataset
+│   └── telco_customer_churn.csv      # Original dataset
+│
+├── images/
+│   ├── churn_distribution.png
+│   ├── churn_by_contract.png
+│   ├── monthly_charges_by_churn.png
+│   ├── tenure_by_churn.png
+│   └── top_churn_drivers.png
 │
 ├── notebooks/
-│   └── 01_initial_analysis.ipynb    # Initial exploratory analysis
+│   └── 01_initial_analysis.ipynb     # EDA, preprocessing, modeling & evaluation
 │
 ├── .gitignore
 └── README.md
@@ -33,14 +64,14 @@ customer-churn-prediction/
 
 ---
 
-## 🛠️ Tools & Technologies
+## 🛠 Tools & Technologies
 
-- **Python** – data cleaning, exploratory analysis, and preprocessing
+- **Python** – data cleaning, preprocessing, exploratory analysis, and modeling
 - **pandas** – data manipulation and analysis
 - **Matplotlib / Seaborn** – data visualization
-- **scikit-learn** – machine learning modeling and evaluation (next phase)
+- **scikit-learn** – preprocessing, Logistic Regression, Random Forest, class weighting, and model evaluation
 - **Jupyter Notebook** – analysis and experimentation
-- **Git + GitHub** – version control and project documentation
+- **Git & GitHub** – version control and project documentation
 
 ---
 ## Exploratory Data Analysis
@@ -74,21 +105,65 @@ Customers who churn tend to have **higher monthly charges** than customers who r
 ![Monthly Charges by Churn Status](images/monthly_charges_by_churn.png)
 
 ---
-## 📊 Key Insights
 
-- 📈 **Average Monthly Charge:** 64.76  
-- 🔍 **Churn Rate:** Much higher in **Month-to-Month** contract customers  
+## 🤖 Machine Learning Modeling
+
+After preprocessing the data, three classification approaches were evaluated:
+
+- Logistic Regression
+- Random Forest
+- Balanced Logistic Regression using class weighting
+
+Because the dataset is moderately imbalanced and the business objective is to identify customers at risk of churn, model evaluation focused not only on accuracy but also on precision, recall, F1-score, and ROC-AUC.
+
+### 📊 Model Comparison
+
+| Model | Accuracy | Precision | Recall | F1-score | ROC-AUC |
+|---|---:|---:|---:|---:|---:|
+| Logistic Regression | 0.804 | 0.648 | 0.575 | 0.609 | 0.836 |
+| Random Forest | 0.787 | 0.629 | 0.489 | 0.550 | 0.820 |
+| **Balanced Logistic Regression** | **0.726** | **0.491** | **0.797** | **0.608** | **0.835** |
+
+### 🎯 Churn Driver Analysis
+
+The selected Balanced Logistic Regression model was also used to examine the strongest features associated with predicted churn.
+
+![Top Churn Drivers](images/top_churn_drivers.png)
+
+Key patterns include:
+
+- **Fiber-optic internet service** is associated with higher predicted churn.
+- **Longer tenure** is strongly associated with lower predicted churn.
+- **Two-year and one-year contracts** are associated with lower predicted churn.
+- The coefficient analysis describes associations within the model and should not be interpreted as causal effects.
 
 ---
+## 📊 Key Insights
 
+- **Churn Rate:** 26.6% of customers in the cleaned dataset churned.
+- **Contract Type:** Month-to-month customers show substantially higher churn than customers on longer-term contracts.
+- **Customer Tenure:** Customers who churn tend to have shorter tenure, suggesting that newer customers are more vulnerable to churn.
+- **Monthly Charges:** Churned customers tend to have higher monthly charges than retained customers.
+- **Model Performance:** Balanced Logistic Regression achieved a churn recall of **79.7%**, identifying **298 of 374 actual churners**.
+- **Churn Drivers:** The selected model associates **fiber-optic internet service** with higher predicted churn, while **longer tenure** and **one-year/two-year contracts** are associated with lower predicted churn.
+- **Business Implication:** Retention efforts could prioritize customers with short tenure, month-to-month contracts, and other characteristics associated with higher predicted churn.
 
+---
 ## ✅ Project Status
 
 - [x] Dataset added
 - [x] Initial exploratory analysis
-- [ ] Data cleaning & preprocessing
-- [ ] Extended exploratory data analysis
-- [ ] Machine learning modeling
-- [ ] Model evaluation
+- [x] Data cleaning & preprocessing
+- [x] Feature engineering
+- [x] Machine learning modeling
+- [x] Model comparison & evaluation
+- [x] Balanced Logistic Regression selected
+- [x] Churn driver analysis
+- [x] Business-oriented interpretation
 
+### 🚀 Next Steps
+
+- [ ] Hyperparameter tuning and threshold optimization
+- [ ] Additional model experimentation
+- [ ] Deployment as a simple churn-risk prediction application
 
