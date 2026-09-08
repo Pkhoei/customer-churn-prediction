@@ -53,7 +53,27 @@ This imbalance should be considered during model evaluation, particularly when s
 ![Customer Churn Distribution](images/churn_distribution.png)
 
 ---
+## Churn Drivers Analysis
 
+### Churn Rate by Contract Type
+
+Customers with **month-to-month contracts have the highest churn rate (42.7%)**, compared with **11.3% for one-year contracts** and only **2.8% for two-year contracts**.
+
+![Churn Rate by Contract Type](images/churn_by_contract.png)
+
+### Customer Tenure by Churn Status
+
+Customers who churn tend to have **substantially shorter tenure** than customers who remain.
+
+![Customer Tenure by Churn Status](images/tenure_by_churn.png)
+
+### Monthly Charges by Churn Status
+
+Customers who churn tend to have **higher monthly charges** than customers who remain. This suggests that monthly charges may be a useful feature for predicting customer churn.
+
+![Monthly Charges by Churn Status](images/monthly_charges_by_churn.png)
+
+---
 ## 📊 Key Insights
 
 - 📈 **Average Monthly Charge:** 64.76  
