@@ -124,6 +124,12 @@ Because the dataset is moderately imbalanced and the business objective is to id
 | Random Forest | 0.787 | 0.629 | 0.489 | 0.550 | 0.820 |
 | **Balanced Logistic Regression** | **0.726** | **0.491** | **0.797** | **0.608** | **0.835** |
 
+### Confusion Matrix – Selected Model
+
+The Balanced Logistic Regression model correctly identified **298 of 374 actual churners**, achieving a recall of **79.7%** and reducing false negatives to **76**.
+
+![Balanced Logistic Regression Confusion Matrix](images/balanced_logistic_confusion_matrix.png)
+
 ### 🎯 Churn Driver Analysis
 
 The selected Balanced Logistic Regression model was also used to examine the strongest features associated with predicted churn.
