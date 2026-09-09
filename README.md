@@ -150,7 +150,7 @@ Key patterns include:
 - **Contract Type:** Month-to-month customers show substantially higher churn than customers on longer-term contracts.
 - **Customer Tenure:** Customers who churn tend to have shorter tenure, suggesting that newer customers are more vulnerable to churn.
 - **Monthly Charges:** Churned customers tend to have higher monthly charges than retained customers.
-- **Model Performance:** Balanced Logistic Regression achieved a churn recall of **79.7%**, identifying **298 of 374 actual churners**.
+- **Model Performance:** After hyperparameter tuning and threshold optimization, the Balanced Logistic Regression achieved **87.2% recall** at a decision threshold of **0.4**, prioritizing the identification of customers at risk of churn.
 - **Churn Drivers:** The selected model associates **fiber-optic internet service** with higher predicted churn, while **longer tenure** and **one-year/two-year contracts** are associated with lower predicted churn.
 - **Business Implication:** Retention efforts could prioritize customers with short tenure, month-to-month contracts, and other characteristics associated with higher predicted churn.
 
@@ -166,10 +166,11 @@ Key patterns include:
 - [x] Balanced Logistic Regression selected
 - [x] Churn driver analysis
 - [x] Business-oriented interpretation
+- [x] Cross-validation
+- [x] Hyperparameter tuning
+- [x] Threshold optimization
+- [x] Additional model experimentation with Gradient Boosting
 
-### 🚀 Next Steps
+### 🚀 Next Step
 
-- [ ] Hyperparameter tuning and threshold optimization
-- [ ] Additional model experimentation
 - [ ] Deployment as a simple churn-risk prediction application
-
