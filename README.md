@@ -163,22 +163,20 @@ Key patterns include:
 - **Business Implication:** Retention efforts could prioritize customers with short tenure, month-to-month contracts, and other characteristics associated with higher predicted churn.
 
 ---
-## ✅ Project Status
+## 🚀 Project Status
 
-- [x] Dataset added
-- [x] Initial exploratory analysis
-- [x] Data cleaning & preprocessing
+- [x] Data cleaning and preprocessing
+- [x] Exploratory data analysis
 - [x] Feature engineering
-- [x] Machine learning modeling
-- [x] Model comparison & evaluation
-- [x] Balanced Logistic Regression selected
-- [x] Churn driver analysis
-- [x] Business-oriented interpretation
+- [x] Baseline modeling
+- [x] Model comparison
 - [x] Cross-validation
 - [x] Hyperparameter tuning
 - [x] Threshold optimization
-- [x] Additional model experimentation with Gradient Boosting
+- [x] Deployment with Streamlit
 
-### 🚀 Next Step
+## 🔮 Future Improvements
 
-- [ ] Deployment as a simple churn-risk prediction application
+- Add SHAP-based model explainability
+- Add automated testing
+- Monitor model performance and data drift
