@@ -3,6 +3,11 @@
 ## 🚀 Live Demo
 
 👉 [Try the Customer Churn Risk Predictor](https://customer-churn-prediction-bbeubc2fxqwx6pi8a6p6p6.streamlit.app/)
+
+### App Preview
+
+![Customer Churn Risk Predictor](images/streamlit-app-demo.png)
+
 ## Project Overview
 
 This project analyzes customer churn in a telecommunications dataset and develops machine learning models to identify customers at risk of leaving.
