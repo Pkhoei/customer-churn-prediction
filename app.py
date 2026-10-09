@@ -29,7 +29,6 @@ st.markdown(
         color: #64748b;
         font-size: 1rem;
         line-height: 1.6;
-        margin-bottom: 0.5rem;
     }
 
     .section-intro {
@@ -37,38 +36,13 @@ st.markdown(
         margin-bottom: 0.5rem;
     }
 
-    .result-card {
-        padding: 1.5rem;
-        border-radius: 14px;
-        border: 1px solid rgba(128, 128, 128, 0.25);
-        background: rgba(128, 128, 128, 0.035);
-        margin: 0.75rem 0;
-    }
-
-    .result-label {
-        font-size: 0.95rem;
-        opacity: 0.8;
-    }
-
-    .result-value {
-        font-size: 2.8rem;
-        font-weight: 750;
-        line-height: 1.3;
-    }
-
-    .risk-status {
-        font-size: 1rem;
-        font-weight: 650;
-        margin-top: 0.4rem;
-    }
-
-    .risk-track {
+    .risk-bar {
         position: relative;
-        height: 16px;
+        height: 18px;
         border-radius: 10px;
-        background: rgba(128, 128, 128, 0.18);
-        margin-top: 1.5rem;
-        margin-bottom: 0.5rem;
+        background: #e5e7eb;
+        margin-top: 20px;
+        margin-bottom: 14px;
     }
 
     .risk-fill {
@@ -78,30 +52,18 @@ st.markdown(
 
     .threshold-marker {
         position: absolute;
-        top: -6px;
-        bottom: -6px;
+        top: -7px;
+        height: 32px;
         width: 3px;
         background: #334155;
-        border-radius: 2px;
         transform: translateX(-50%);
-    }
-
-    .threshold-label {
-        font-size: 0.85rem;
-        color: #64748b;
-        margin-top: 0.8rem;
-    }
-
-    .result-note {
-        font-size: 0.9rem;
-        opacity: 0.75;
-        margin-top: 0.7rem;
+        border-radius: 2px;
     }
 
     .validation-note {
-        font-size: 0.9rem;
         color: #64748b;
-        margin: 0.5rem 0;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
     }
     </style>
     """,
@@ -109,12 +71,14 @@ st.markdown(
 )
 
 # --------------------------------------------------
-# Load trained model and configuration
+# Load trained model
 # --------------------------------------------------
 @st.cache_resource
 def load_artifacts():
     model = joblib.load("model/churn_model.joblib")
-    columns = list(joblib.load("model/feature_columns.joblib"))
+    columns = list(
+        joblib.load("model/feature_columns.joblib")
+    )
     threshold = float(
         joblib.load("model/decision_threshold.joblib")
     )
@@ -129,16 +93,11 @@ model, feature_columns, threshold = load_artifacts()
 st.title("📉 Customer Churn Risk Predictor")
 
 st.markdown(
-    """
-    <div class="app-subtitle">
-        An interactive machine learning application for
-        estimating customer churn risk in telecommunications.
-        Explore customer profiles, review risk predictions,
-        and understand how predictive analytics can support
-        customer retention decisions.
-    </div>
-    """,
-    unsafe_allow_html=True
+    "An interactive machine learning application for "
+    "estimating customer churn risk in telecommunications. "
+    "Explore customer profiles, review risk predictions, "
+    "and understand how predictive analytics can support "
+    "customer retention decisions."
 )
 
 st.divider()
@@ -148,14 +107,9 @@ st.divider()
 # --------------------------------------------------
 st.header("Customer Information")
 
-st.markdown(
-    """
-    <div class="section-intro">
-        Complete the customer profile, service configuration,
-        and billing details to generate a churn-risk estimate.
-    </div>
-    """,
-    unsafe_allow_html=True
+st.write(
+    "Complete the customer profile, service configuration, "
+    "and billing details to generate a churn-risk estimate."
 )
 
 with st.form("churn_prediction_form"):
@@ -201,7 +155,9 @@ with st.form("churn_prediction_form"):
 
         if phone_service == "No":
             multiple_lines = "No phone service"
-            st.caption("Multiple Lines: No phone service")
+            st.caption(
+                "Multiple Lines: No phone service"
+            )
         else:
             multiple_lines = st.selectbox(
                 "Multiple Lines", ["No", "Yes"]
@@ -225,6 +181,7 @@ with st.form("churn_prediction_form"):
         tech_support = "No internet service"
         streaming_tv = "No internet service"
         streaming_movies = "No internet service"
+
     else:
         addon_col1, addon_col2 = st.columns(2)
 
@@ -324,6 +281,7 @@ if submitted:
         )
 
     if monthly_charges > 0 and total_charges > 0:
+
         estimated_total = tenure * monthly_charges
 
         if estimated_total > 0:
@@ -351,6 +309,7 @@ if submitted:
             "Please correct the invalid inputs "
             "before generating a prediction."
         )
+
         st.stop()
 
     if validation_warnings:
@@ -359,15 +318,11 @@ if submitted:
 
         for message in validation_warnings:
             st.warning(message)
+
     else:
-        st.markdown(
-            """
-            <div class="validation-note">
-                ✓ Input validation completed.
-                No issues detected by the current checks.
-            </div>
-            """,
-            unsafe_allow_html=True
+        st.caption(
+            "✓ Input validation completed. "
+            "No issues detected by the current checks."
         )
 
     # --------------------------------------------------
@@ -416,6 +371,9 @@ if submitted:
         columns=feature_columns
     )
 
+    # --------------------------------------------------
+    # Feature verification
+    # --------------------------------------------------
     expected_count = getattr(
         model,
         "n_features_in_",
@@ -439,82 +397,90 @@ if submitted:
             )
             st.stop()
 
+    # --------------------------------------------------
+    # Prediction
+    # --------------------------------------------------
     churn_probability = float(
         model.predict_proba(input_encoded)[0, 1]
     )
 
-    # --------------------------------------------------
-    # Prediction results
-    # --------------------------------------------------
-    st.divider()
-    st.header("Prediction Results")
-
     is_high_risk = churn_probability >= threshold
 
     risk_label = (
-        "High Churn Risk" if is_high_risk
+        "High Churn Risk"
+        if is_high_risk
         else "Low Churn Risk"
     )
 
     risk_color = (
-        "#DC6B61" if is_high_risk
+        "#DC6B61"
+        if is_high_risk
         else "#26977B"
     )
 
     probability_percent = churn_probability * 100
     threshold_percent = threshold * 100
 
-    st.markdown(
-        f"""
-        <div class="result-card">
-            <div class="result-label">
-                Predicted Churn Probability
-            </div>
+    # --------------------------------------------------
+    # Prediction results - native Streamlit
+    # --------------------------------------------------
+    st.divider()
+    st.header("Prediction Results")
 
-            <div class="result-value"
-                 style="color:{risk_color};">
-                {probability_percent:.1f}%
-            </div>
+    with st.container(border=True):
 
-            <div class="risk-status"
-                 style="color:{risk_color};">
-                {risk_label}
-            </div>
+        result_col1, result_col2 = st.columns(2)
 
-            <div class="risk-track">
-                <div class="risk-fill"
-                     style="
-                        width:{probability_percent:.2f}%;
-                        background:{risk_color};
-                     ">
-                </div>
+        with result_col1:
+            st.metric(
+                "Predicted Churn Probability",
+                f"{churn_probability:.1%}"
+            )
 
-                <div class="threshold-marker"
-                     style="left:{threshold_percent:.2f}%;">
-                </div>
-            </div>
+        with result_col2:
+            st.metric(
+                "Decision Threshold",
+                f"{threshold:.0%}"
+            )
 
-            <div class="threshold-label">
-                Decision threshold: {threshold:.0%}
-                (vertical marker)
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+        if is_high_risk:
+            st.error(risk_label)
+        else:
+            st.success(risk_label)
 
-    if is_high_risk:
-        st.write(
-            "The customer's predicted churn score is "
-            "at or above the decision threshold. "
-            "This profile is classified as higher risk."
+        # Single-line HTML avoids Markdown code rendering.
+        bar_html = (
+            '<div class="risk-bar">'
+            f'<div class="risk-fill" style="width:{probability_percent:.2f}%;'
+            f'background:{risk_color};"></div>'
+            f'<div class="threshold-marker" '
+            f'style="left:{threshold_percent:.2f}%;"></div>'
+            '</div>'
         )
-    else:
-        st.write(
-            "The customer's predicted churn score is "
-            "below the decision threshold. "
-            "This profile is classified as lower risk."
+
+        st.markdown(
+            bar_html,
+            unsafe_allow_html=True
         )
+
+        st.caption(
+            "Risk score (colored bar) · "
+            f"Decision threshold {threshold:.0%} "
+            "(vertical marker)"
+        )
+
+        if is_high_risk:
+            st.write(
+                "The customer's predicted churn score "
+                "is at or above the decision threshold. "
+                "This profile is classified as higher risk."
+            )
+        else:
+            st.write(
+                "The customer's predicted churn score "
+                "is below the decision threshold. "
+                "This profile is classified as lower risk."
+            )
 
     st.caption(
         "The prediction is a model-based estimate, "
@@ -530,6 +496,7 @@ st.divider()
 with st.expander("About This Model"):
 
     st.markdown("### Business Problem")
+
     st.write(
         "Customer churn occurs when customers stop using "
         "a company's services. Identifying customers at "
@@ -537,6 +504,7 @@ with st.expander("About This Model"):
     )
 
     st.markdown("### Machine Learning Approach")
+
     st.write(
         "This project uses a telecommunications dataset "
         "and evaluates multiple classification models, "
@@ -550,6 +518,7 @@ with st.expander("About This Model"):
     )
 
     st.markdown("### Model Evaluation")
+
     st.write(
         "The models were evaluated using precision, recall, "
         "F1-score, and ROC-AUC. The decision threshold was "
@@ -557,6 +526,7 @@ with st.expander("About This Model"):
     )
 
     st.markdown("### Limitations")
+
     st.write(
         "Predictions reflect patterns learned from historical "
         "data. They do not establish causation or guarantee "
