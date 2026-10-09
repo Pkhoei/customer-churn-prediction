@@ -1,7 +1,8 @@
-
 import joblib
 import pandas as pd
 import streamlit as st
+from supabase import create_client
+import logging
 
 # --------------------------------------------------
 # Page configuration
@@ -86,6 +87,28 @@ def load_artifacts():
 
 
 model, feature_columns, threshold = load_artifacts()
+
+# --------------------------------------------------
+# Anonymous prediction event tracking
+# --------------------------------------------------
+logger = logging.getLogger(__name__)
+
+@st.cache_resource
+def get_supabase_client():
+    url = st.secrets["SUPABASE_URL"]
+    key = st.secrets["SUPABASE_KEY"]
+    return create_client(url, key)
+
+
+def record_prediction_event(risk_label):
+    try:
+        get_supabase_client().table("prediction_events").insert(
+            {"risk_label": risk_label}
+        ).execute()
+    except Exception:
+        # Logging must not prevent users from getting predictions.
+        logger.warning("Prediction event could not be recorded")
+
 
 # --------------------------------------------------
 # Header
@@ -417,6 +440,8 @@ if submitted:
         if is_high_risk
         else "#26977B"
     )
+
+    record_prediction_event(risk_label)
 
     probability_percent = churn_probability * 100
     threshold_percent = threshold * 100
