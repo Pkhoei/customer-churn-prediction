@@ -75,7 +75,9 @@ with st.form("churn_prediction_form"):
         "Tenure (months)",
         min_value=1,
         max_value=72,
-        value=12
+        value=12,
+        help="The model was trained on customers with "
+             "at least one month of tenure."
     )
 
     st.markdown("#### Services")
@@ -176,10 +178,83 @@ with st.form("churn_prediction_form"):
     )
 
 # --------------------------------------------------
-# Prepare input and predict
+# Input validation
 # --------------------------------------------------
 if submitted:
 
+    st.divider()
+
+    st.subheader("Input Validation")
+
+    validation_errors = []
+    validation_warnings = []
+
+    # The cleaned training data excludes zero-tenure
+    # customers and records with missing TotalCharges.
+    if tenure < 1:
+        validation_errors.append(
+            "Tenure must be at least one month."
+        )
+
+    # These checks are demonstration-level business
+    # rules, not universal telecom billing rules.
+    if monthly_charges <= 0:
+        validation_errors.append(
+            "Monthly Charges must be greater than zero."
+        )
+
+    if total_charges <= 0:
+        validation_errors.append(
+            "Total Charges must be greater than zero."
+        )
+
+    # Compare historical total charges with a simple
+    # estimate based on current monthly charges.
+    # Differences may be legitimate because prices,
+    # discounts, and services can change over time.
+    if monthly_charges > 0 and total_charges > 0:
+
+        estimated_total = tenure * monthly_charges
+
+        if estimated_total > 0:
+
+            difference_ratio = abs(
+                total_charges - estimated_total
+            ) / estimated_total
+
+            if difference_ratio > 0.50:
+                validation_warnings.append(
+                    "Total Charges differ substantially "
+                    "from Tenure × Monthly Charges. "
+                    "Please confirm the values. This may "
+                    "be legitimate if the customer's "
+                    "historical pricing, discounts, or "
+                    "services changed."
+                )
+
+    if validation_errors:
+        for message in validation_errors:
+            st.error(message)
+
+        st.warning(
+            "Please correct the invalid inputs "
+            "before generating a prediction."
+        )
+
+        st.stop()
+
+    for message in validation_warnings:
+        st.warning(message)
+
+    if not validation_warnings:
+        st.success(
+            "Input validation completed. "
+            "No issues detected by the current checks."
+        )
+
+    # --------------------------------------------------
+    # Prepare model input
+    # --------------------------------------------------
     numeric_features = {
         "SeniorCitizen": int(senior_citizen == "Yes"),
         "tenure": tenure,
@@ -205,19 +280,20 @@ if submitted:
         "PaymentMethod": payment_method
     }
 
-    # Start with all expected training columns.
+    # Initialize the exact training feature columns.
     encoded_row = {
         column: 0 for column in feature_columns
     }
 
-    # Populate numerical features.
+    # Set numerical values.
     for name, value in numeric_features.items():
         encoded_row[name] = value
 
-    # Populate categorical dummy columns.
-    # Columns absent from the training feature list
-    # represent the drop_first baseline categories.
+    # Set categorical dummy variables.
+    # A category without a matching column is the
+    # reference category from drop_first encoding.
     for name, selected_value in categorical_features.items():
+
         dummy_column = f"{name}_{selected_value}"
 
         if dummy_column in encoded_row:
@@ -228,9 +304,13 @@ if submitted:
         columns=feature_columns
     )
 
-    # Verify feature alignment.
+    # --------------------------------------------------
+    # Model input verification
+    # --------------------------------------------------
     expected_count = getattr(
-        model, "n_features_in_", len(feature_columns)
+        model,
+        "n_features_in_",
+        len(feature_columns)
     )
 
     if input_encoded.shape[1] != expected_count:
@@ -240,6 +320,19 @@ if submitted:
         )
         st.stop()
 
+    if hasattr(model, "feature_names_in_"):
+        if list(model.feature_names_in_) != list(
+            input_encoded.columns
+        ):
+            st.error(
+                "Feature order mismatch: input columns "
+                "do not match the trained model."
+            )
+            st.stop()
+
+    # --------------------------------------------------
+    # Churn prediction
+    # --------------------------------------------------
     churn_probability = float(
         model.predict_proba(input_encoded)[0, 1]
     )
@@ -253,6 +346,7 @@ if submitted:
     )
 
     if churn_probability >= threshold:
+
         st.error("High Churn Risk")
 
         st.write(
@@ -262,6 +356,7 @@ if submitted:
         )
 
     else:
+
         st.success("Low Churn Risk")
 
         st.write(
