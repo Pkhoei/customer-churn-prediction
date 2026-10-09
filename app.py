@@ -1,3 +1,4 @@
+
 import joblib
 import pandas as pd
 import streamlit as st
@@ -77,12 +78,15 @@ st.markdown(
 @st.cache_resource
 def load_artifacts():
     model = joblib.load("model/churn_model.joblib")
+
     columns = list(
         joblib.load("model/feature_columns.joblib")
     )
+
     threshold = float(
         joblib.load("model/decision_threshold.joblib")
     )
+
     return model, columns, threshold
 
 
@@ -93,21 +97,41 @@ model, feature_columns, threshold = load_artifacts()
 # --------------------------------------------------
 logger = logging.getLogger(__name__)
 
+
 @st.cache_resource
 def get_supabase_client():
     url = st.secrets["SUPABASE_URL"]
     key = st.secrets["SUPABASE_KEY"]
+
     return create_client(url, key)
 
 
 def record_prediction_event(risk_label):
     try:
-        get_supabase_client().table("prediction_events").insert(
-            {"risk_label": risk_label}
-        ).execute()
+        response = (
+            get_supabase_client()
+            .table("prediction_events")
+            .insert({"risk_label": risk_label})
+            .execute()
+        )
+
+        logger.info(
+            "Prediction event successfully recorded in Supabase."
+        )
+
+        return True
+
     except Exception:
-        # Logging must not prevent users from getting predictions.
-        logger.warning("Prediction event could not be recorded")
+        # Prediction results remain available even if logging fails.
+        logger.exception(
+            "Supabase prediction event logging failed"
+        )
+
+        st.warning(
+            "Prediction completed, but analytics logging failed."
+        )
+
+        return False
 
 
 # --------------------------------------------------
@@ -441,6 +465,9 @@ if submitted:
         else "#26977B"
     )
 
+    # Record anonymous prediction event.
+    # Only the risk label is sent.
+    # The database supplies the timestamp and ID.
     record_prediction_event(risk_label)
 
     probability_percent = churn_probability * 100
