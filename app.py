@@ -20,28 +20,29 @@ st.markdown(
     """
     <style>
     .block-container {
-        max-width: 1120px;
-        padding-top: 2rem;
-        padding-bottom: 3rem;
+        max-width: 1080px;
+        padding-top: 1.5rem;
+        padding-bottom: 2.5rem;
     }
 
     .app-subtitle {
         color: #64748b;
-        font-size: 1.05rem;
-        line-height: 1.7;
-        margin-bottom: 1rem;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
     }
 
     .section-intro {
         color: #64748b;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
 
     .result-card {
         padding: 1.5rem;
         border-radius: 14px;
         border: 1px solid rgba(128, 128, 128, 0.25);
-        margin: 1rem 0;
+        background: rgba(128, 128, 128, 0.035);
+        margin: 0.75rem 0;
     }
 
     .result-label {
@@ -55,12 +56,19 @@ st.markdown(
         line-height: 1.3;
     }
 
+    .risk-status {
+        font-size: 1rem;
+        font-weight: 650;
+        margin-top: 0.4rem;
+    }
+
     .risk-track {
-        height: 14px;
+        position: relative;
+        height: 16px;
         border-radius: 10px;
         background: rgba(128, 128, 128, 0.18);
-        overflow: hidden;
-        margin: 1rem 0 0.5rem 0;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
     }
 
     .risk-fill {
@@ -68,10 +76,32 @@ st.markdown(
         border-radius: 10px;
     }
 
+    .threshold-marker {
+        position: absolute;
+        top: -6px;
+        bottom: -6px;
+        width: 3px;
+        background: #334155;
+        border-radius: 2px;
+        transform: translateX(-50%);
+    }
+
+    .threshold-label {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-top: 0.8rem;
+    }
+
     .result-note {
         font-size: 0.9rem;
         opacity: 0.75;
         margin-top: 0.7rem;
+    }
+
+    .validation-note {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin: 0.5rem 0;
     }
     </style>
     """,
@@ -114,7 +144,7 @@ st.markdown(
 st.divider()
 
 # --------------------------------------------------
-# Customer information form
+# Customer information
 # --------------------------------------------------
 st.header("Customer Information")
 
@@ -177,21 +207,15 @@ with st.form("churn_prediction_form"):
                 "Multiple Lines", ["No", "Yes"]
             )
 
+    with service_col2:
         internet_service = st.selectbox(
             "Internet Service",
             ["DSL", "Fiber optic", "No"]
         )
 
-    with service_col2:
         if internet_service == "No":
-            st.info(
-                "Internet add-on services are unavailable "
-                "when Internet Service is set to No."
-            )
-        else:
             st.caption(
-                "Configure the customer's internet "
-                "add-on services below."
+                "Internet add-on services are unavailable."
             )
 
     if internet_service == "No":
@@ -270,8 +294,6 @@ with st.form("churn_prediction_form"):
             step=1.0
         )
 
-    st.write("")
-
     submitted = st.form_submit_button(
         "Analyze Customer Churn Risk",
         type="primary",
@@ -318,10 +340,10 @@ if submitted:
                     "service changes may explain this."
                 )
 
-    st.divider()
-    st.subheader("Input Validation")
-
     if validation_errors:
+        st.divider()
+        st.subheader("Input Validation")
+
         for message in validation_errors:
             st.error(message)
 
@@ -331,13 +353,21 @@ if submitted:
         )
         st.stop()
 
-    for message in validation_warnings:
-        st.warning(message)
+    if validation_warnings:
+        st.divider()
+        st.subheader("Input Validation")
 
-    if not validation_warnings:
-        st.success(
-            "Input validation completed. "
-            "No issues detected by the current checks."
+        for message in validation_warnings:
+            st.warning(message)
+    else:
+        st.markdown(
+            """
+            <div class="validation-note">
+                ✓ Input validation completed.
+                No issues detected by the current checks.
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
     # --------------------------------------------------
@@ -414,7 +444,7 @@ if submitted:
     )
 
     # --------------------------------------------------
-    # Professional result display
+    # Prediction results
     # --------------------------------------------------
     st.divider()
     st.header("Prediction Results")
@@ -432,6 +462,7 @@ if submitted:
     )
 
     probability_percent = churn_probability * 100
+    threshold_percent = threshold * 100
 
     st.markdown(
         f"""
@@ -439,13 +470,17 @@ if submitted:
             <div class="result-label">
                 Predicted Churn Probability
             </div>
+
             <div class="result-value"
                  style="color:{risk_color};">
                 {probability_percent:.1f}%
             </div>
-            <div style="font-weight:650; margin-top:8px;">
+
+            <div class="risk-status"
+                 style="color:{risk_color};">
                 {risk_label}
             </div>
+
             <div class="risk-track">
                 <div class="risk-fill"
                      style="
@@ -453,9 +488,15 @@ if submitted:
                         background:{risk_color};
                      ">
                 </div>
+
+                <div class="threshold-marker"
+                     style="left:{threshold_percent:.2f}%;">
+                </div>
             </div>
-            <div class="result-note">
+
+            <div class="threshold-label">
                 Decision threshold: {threshold:.0%}
+                (vertical marker)
             </div>
         </div>
         """,
@@ -463,16 +504,16 @@ if submitted:
     )
 
     if is_high_risk:
-        st.warning(
-            "This customer is classified as higher risk "
-            "because the predicted churn score meets "
-            "or exceeds the decision threshold."
+        st.write(
+            "The customer's predicted churn score is "
+            "at or above the decision threshold. "
+            "This profile is classified as higher risk."
         )
     else:
-        st.success(
-            "This customer is classified as lower risk "
-            "because the predicted churn score is below "
-            "the decision threshold."
+        st.write(
+            "The customer's predicted churn score is "
+            "below the decision threshold. "
+            "This profile is classified as lower risk."
         )
 
     st.caption(
@@ -482,14 +523,13 @@ if submitted:
     )
 
 # --------------------------------------------------
-# Model information
+# About the model
 # --------------------------------------------------
 st.divider()
 
 with st.expander("About This Model"):
 
     st.markdown("### Business Problem")
-
     st.write(
         "Customer churn occurs when customers stop using "
         "a company's services. Identifying customers at "
@@ -497,7 +537,6 @@ with st.expander("About This Model"):
     )
 
     st.markdown("### Machine Learning Approach")
-
     st.write(
         "This project uses a telecommunications dataset "
         "and evaluates multiple classification models, "
@@ -511,7 +550,6 @@ with st.expander("About This Model"):
     )
 
     st.markdown("### Model Evaluation")
-
     st.write(
         "The models were evaluated using precision, recall, "
         "F1-score, and ROC-AUC. The decision threshold was "
@@ -519,7 +557,6 @@ with st.expander("About This Model"):
     )
 
     st.markdown("### Limitations")
-
     st.write(
         "Predictions reflect patterns learned from historical "
         "data. They do not establish causation or guarantee "
