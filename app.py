@@ -9,7 +9,73 @@ import streamlit as st
 st.set_page_config(
     page_title="Customer Churn Risk Predictor",
     page_icon="📉",
-    layout="centered"
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+# --------------------------------------------------
+# Styling
+# --------------------------------------------------
+st.markdown(
+    """
+    <style>
+    .block-container {
+        max-width: 1120px;
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
+
+    .app-subtitle {
+        color: #64748b;
+        font-size: 1.05rem;
+        line-height: 1.7;
+        margin-bottom: 1rem;
+    }
+
+    .section-intro {
+        color: #64748b;
+        margin-bottom: 1rem;
+    }
+
+    .result-card {
+        padding: 1.5rem;
+        border-radius: 14px;
+        border: 1px solid rgba(128, 128, 128, 0.25);
+        margin: 1rem 0;
+    }
+
+    .result-label {
+        font-size: 0.95rem;
+        opacity: 0.8;
+    }
+
+    .result-value {
+        font-size: 2.8rem;
+        font-weight: 750;
+        line-height: 1.3;
+    }
+
+    .risk-track {
+        height: 14px;
+        border-radius: 10px;
+        background: rgba(128, 128, 128, 0.18);
+        overflow: hidden;
+        margin: 1rem 0 0.5rem 0;
+    }
+
+    .risk-fill {
+        height: 100%;
+        border-radius: 10px;
+    }
+
+    .result-note {
+        font-size: 0.9rem;
+        opacity: 0.75;
+        margin-top: 0.7rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
 )
 
 # --------------------------------------------------
@@ -28,76 +94,105 @@ def load_artifacts():
 model, feature_columns, threshold = load_artifacts()
 
 # --------------------------------------------------
-# Introduction
+# Header
 # --------------------------------------------------
 st.title("📉 Customer Churn Risk Predictor")
 
-st.write(
-    "This interactive app uses machine learning to estimate "
-    "how likely a customer is to leave a telecommunications "
-    "company. It demonstrates how businesses can identify "
-    "customers who may need proactive retention support."
+st.markdown(
+    """
+    <div class="app-subtitle">
+        An interactive machine learning application for
+        estimating customer churn risk in telecommunications.
+        Explore customer profiles, review risk predictions,
+        and understand how predictive analytics can support
+        customer retention decisions.
+    </div>
+    """,
+    unsafe_allow_html=True
 )
 
 st.divider()
 
 # --------------------------------------------------
-# Customer information
+# Customer information form
 # --------------------------------------------------
-st.subheader("Customer Information")
+st.header("Customer Information")
 
-st.write(
-    "Enter the customer's account, service, and billing "
-    "information to estimate churn risk."
+st.markdown(
+    """
+    <div class="section-intro">
+        Complete the customer profile, service configuration,
+        and billing details to generate a churn-risk estimate.
+    </div>
+    """,
+    unsafe_allow_html=True
 )
 
 with st.form("churn_prediction_form"):
 
-    st.markdown("#### Customer Profile")
+    st.subheader("01 · Customer Profile")
 
-    gender = st.selectbox(
-        "Gender", ["Female", "Male"]
-    )
+    profile_col1, profile_col2 = st.columns(2)
 
-    senior_citizen = st.selectbox(
-        "Senior Citizen", ["No", "Yes"]
-    )
-
-    partner = st.selectbox(
-        "Partner", ["No", "Yes"]
-    )
-
-    dependents = st.selectbox(
-        "Dependents", ["No", "Yes"]
-    )
-
-    tenure = st.number_input(
-        "Tenure (months)",
-        min_value=1,
-        max_value=72,
-        value=12,
-        help="The model was trained on customers with "
-             "at least one month of tenure."
-    )
-
-    st.markdown("#### Services")
-
-    phone_service = st.selectbox(
-        "Phone Service", ["Yes", "No"]
-    )
-
-    if phone_service == "No":
-        multiple_lines = "No phone service"
-        st.caption("Multiple Lines: No phone service")
-    else:
-        multiple_lines = st.selectbox(
-            "Multiple Lines", ["No", "Yes"]
+    with profile_col1:
+        gender = st.selectbox(
+            "Gender", ["Female", "Male"]
         )
 
-    internet_service = st.selectbox(
-        "Internet Service",
-        ["DSL", "Fiber optic", "No"]
-    )
+        partner = st.selectbox(
+            "Partner", ["No", "Yes"]
+        )
+
+        tenure = st.number_input(
+            "Tenure (months)",
+            min_value=1,
+            max_value=72,
+            value=12
+        )
+
+    with profile_col2:
+        senior_citizen = st.selectbox(
+            "Senior Citizen", ["No", "Yes"]
+        )
+
+        dependents = st.selectbox(
+            "Dependents", ["No", "Yes"]
+        )
+
+    st.divider()
+    st.subheader("02 · Services")
+
+    service_col1, service_col2 = st.columns(2)
+
+    with service_col1:
+        phone_service = st.selectbox(
+            "Phone Service", ["Yes", "No"]
+        )
+
+        if phone_service == "No":
+            multiple_lines = "No phone service"
+            st.caption("Multiple Lines: No phone service")
+        else:
+            multiple_lines = st.selectbox(
+                "Multiple Lines", ["No", "Yes"]
+            )
+
+        internet_service = st.selectbox(
+            "Internet Service",
+            ["DSL", "Fiber optic", "No"]
+        )
+
+    with service_col2:
+        if internet_service == "No":
+            st.info(
+                "Internet add-on services are unavailable "
+                "when Internet Service is set to No."
+            )
+        else:
+            st.caption(
+                "Configure the customer's internet "
+                "add-on services below."
+            )
 
     if internet_service == "No":
         online_security = "No internet service"
@@ -106,98 +201,96 @@ with st.form("churn_prediction_form"):
         tech_support = "No internet service"
         streaming_tv = "No internet service"
         streaming_movies = "No internet service"
-
-        st.caption(
-            "Internet add-on services are unavailable "
-            "when Internet Service is set to No."
-        )
     else:
-        online_security = st.selectbox(
-            "Online Security", ["No", "Yes"]
+        addon_col1, addon_col2 = st.columns(2)
+
+        with addon_col1:
+            online_security = st.selectbox(
+                "Online Security", ["No", "Yes"]
+            )
+
+            online_backup = st.selectbox(
+                "Online Backup", ["No", "Yes"]
+            )
+
+            device_protection = st.selectbox(
+                "Device Protection", ["No", "Yes"]
+            )
+
+        with addon_col2:
+            tech_support = st.selectbox(
+                "Tech Support", ["No", "Yes"]
+            )
+
+            streaming_tv = st.selectbox(
+                "Streaming TV", ["No", "Yes"]
+            )
+
+            streaming_movies = st.selectbox(
+                "Streaming Movies", ["No", "Yes"]
+            )
+
+    st.divider()
+    st.subheader("03 · Contract and Billing")
+
+    billing_col1, billing_col2 = st.columns(2)
+
+    with billing_col1:
+        contract = st.selectbox(
+            "Contract Type",
+            ["Month-to-month", "One year", "Two year"]
         )
 
-        online_backup = st.selectbox(
-            "Online Backup", ["No", "Yes"]
+        payment_method = st.selectbox(
+            "Payment Method",
+            [
+                "Electronic check",
+                "Mailed check",
+                "Bank transfer (automatic)",
+                "Credit card (automatic)"
+            ]
         )
 
-        device_protection = st.selectbox(
-            "Device Protection", ["No", "Yes"]
+        monthly_charges = st.number_input(
+            "Monthly Charges",
+            min_value=0.0,
+            value=70.0,
+            step=1.0
         )
 
-        tech_support = st.selectbox(
-            "Tech Support", ["No", "Yes"]
+    with billing_col2:
+        paperless_billing = st.selectbox(
+            "Paperless Billing", ["Yes", "No"]
         )
 
-        streaming_tv = st.selectbox(
-            "Streaming TV", ["No", "Yes"]
+        total_charges = st.number_input(
+            "Total Charges",
+            min_value=0.0,
+            value=500.0,
+            step=1.0
         )
 
-        streaming_movies = st.selectbox(
-            "Streaming Movies", ["No", "Yes"]
-        )
-
-    st.markdown("#### Contract and Billing")
-
-    contract = st.selectbox(
-        "Contract Type",
-        ["Month-to-month", "One year", "Two year"]
-    )
-
-    paperless_billing = st.selectbox(
-        "Paperless Billing", ["Yes", "No"]
-    )
-
-    payment_method = st.selectbox(
-        "Payment Method",
-        [
-            "Electronic check",
-            "Mailed check",
-            "Bank transfer (automatic)",
-            "Credit card (automatic)"
-        ]
-    )
-
-    monthly_charges = st.number_input(
-        "Monthly Charges",
-        min_value=0.0,
-        value=70.0,
-        step=1.0
-    )
-
-    total_charges = st.number_input(
-        "Total Charges",
-        min_value=0.0,
-        value=500.0,
-        step=1.0
-    )
+    st.write("")
 
     submitted = st.form_submit_button(
-        "Predict Churn Risk",
+        "Analyze Customer Churn Risk",
         type="primary",
         use_container_width=True
     )
 
 # --------------------------------------------------
-# Input validation
+# Validation and prediction
 # --------------------------------------------------
 if submitted:
-
-    st.divider()
-
-    st.subheader("Input Validation")
 
     validation_errors = []
     validation_warnings = []
 
-    # The cleaned training data excludes zero-tenure
-    # customers and records with missing TotalCharges.
     if tenure < 1:
         validation_errors.append(
             "Tenure must be at least one month."
         )
 
-    # These checks are demonstration-level business
-    # rules, not universal telecom billing rules.
     if monthly_charges <= 0:
         validation_errors.append(
             "Monthly Charges must be greater than zero."
@@ -208,16 +301,10 @@ if submitted:
             "Total Charges must be greater than zero."
         )
 
-    # Compare historical total charges with a simple
-    # estimate based on current monthly charges.
-    # Differences may be legitimate because prices,
-    # discounts, and services can change over time.
     if monthly_charges > 0 and total_charges > 0:
-
         estimated_total = tenure * monthly_charges
 
         if estimated_total > 0:
-
             difference_ratio = abs(
                 total_charges - estimated_total
             ) / estimated_total
@@ -226,11 +313,13 @@ if submitted:
                 validation_warnings.append(
                     "Total Charges differ substantially "
                     "from Tenure × Monthly Charges. "
-                    "Please confirm the values. This may "
-                    "be legitimate if the customer's "
-                    "historical pricing, discounts, or "
-                    "services changed."
+                    "Please confirm the values. "
+                    "Historical pricing, discounts, or "
+                    "service changes may explain this."
                 )
+
+    st.divider()
+    st.subheader("Input Validation")
 
     if validation_errors:
         for message in validation_errors:
@@ -240,7 +329,6 @@ if submitted:
             "Please correct the invalid inputs "
             "before generating a prediction."
         )
-
         st.stop()
 
     for message in validation_warnings:
@@ -253,7 +341,7 @@ if submitted:
         )
 
     # --------------------------------------------------
-    # Prepare model input
+    # Model input preparation
     # --------------------------------------------------
     numeric_features = {
         "SeniorCitizen": int(senior_citizen == "Yes"),
@@ -280,20 +368,14 @@ if submitted:
         "PaymentMethod": payment_method
     }
 
-    # Initialize the exact training feature columns.
     encoded_row = {
         column: 0 for column in feature_columns
     }
 
-    # Set numerical values.
     for name, value in numeric_features.items():
         encoded_row[name] = value
 
-    # Set categorical dummy variables.
-    # A category without a matching column is the
-    # reference category from drop_first encoding.
     for name, selected_value in categorical_features.items():
-
         dummy_column = f"{name}_{selected_value}"
 
         if dummy_column in encoded_row:
@@ -304,9 +386,6 @@ if submitted:
         columns=feature_columns
     )
 
-    # --------------------------------------------------
-    # Model input verification
-    # --------------------------------------------------
     expected_count = getattr(
         model,
         "n_features_in_",
@@ -315,7 +394,7 @@ if submitted:
 
     if input_encoded.shape[1] != expected_count:
         st.error(
-            "Feature mismatch: the input does not match "
+            "Feature mismatch: input does not match "
             "the trained model."
         )
         st.stop()
@@ -330,49 +409,80 @@ if submitted:
             )
             st.stop()
 
-    # --------------------------------------------------
-    # Churn prediction
-    # --------------------------------------------------
     churn_probability = float(
         model.predict_proba(input_encoded)[0, 1]
     )
 
+    # --------------------------------------------------
+    # Professional result display
+    # --------------------------------------------------
     st.divider()
-    st.subheader("Prediction Results")
+    st.header("Prediction Results")
 
-    st.metric(
-        "Predicted Churn Probability",
-        f"{churn_probability:.1%}"
+    is_high_risk = churn_probability >= threshold
+
+    risk_label = (
+        "High Churn Risk" if is_high_risk
+        else "Low Churn Risk"
     )
 
-    if churn_probability >= threshold:
+    risk_color = (
+        "#DC6B61" if is_high_risk
+        else "#26977B"
+    )
 
-        st.error("High Churn Risk")
+    probability_percent = churn_probability * 100
 
-        st.write(
-            "The predicted churn probability is at or above "
-            "the model's decision threshold. This customer "
-            "is therefore classified as higher risk."
+    st.markdown(
+        f"""
+        <div class="result-card">
+            <div class="result-label">
+                Predicted Churn Probability
+            </div>
+            <div class="result-value"
+                 style="color:{risk_color};">
+                {probability_percent:.1f}%
+            </div>
+            <div style="font-weight:650; margin-top:8px;">
+                {risk_label}
+            </div>
+            <div class="risk-track">
+                <div class="risk-fill"
+                     style="
+                        width:{probability_percent:.2f}%;
+                        background:{risk_color};
+                     ">
+                </div>
+            </div>
+            <div class="result-note">
+                Decision threshold: {threshold:.0%}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    if is_high_risk:
+        st.warning(
+            "This customer is classified as higher risk "
+            "because the predicted churn score meets "
+            "or exceeds the decision threshold."
         )
-
     else:
-
-        st.success("Low Churn Risk")
-
-        st.write(
-            "The predicted churn probability is below "
-            "the model's decision threshold. This customer "
-            "is therefore classified as lower risk."
+        st.success(
+            "This customer is classified as lower risk "
+            "because the predicted churn score is below "
+            "the decision threshold."
         )
 
     st.caption(
-        f"Decision threshold: {threshold:.0%}. "
-        "This is a model-based estimate, not a certainty "
-        "that the customer will leave."
+        "The prediction is a model-based estimate, "
+        "not a guaranteed outcome or a verified "
+        "real-world probability."
     )
 
 # --------------------------------------------------
-# About the model
+# Model information
 # --------------------------------------------------
 st.divider()
 
@@ -426,9 +536,6 @@ with st.expander("About This Model"):
         "not a production-ready customer retention system."
     )
 
-# --------------------------------------------------
-# Footer
-# --------------------------------------------------
 st.caption(
     "Customer Churn Prediction | Machine Learning Portfolio Project"
 )
