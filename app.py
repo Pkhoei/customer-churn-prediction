@@ -16,7 +16,10 @@ st.set_page_config(
 st.title("📉 Customer Churn Risk Predictor")
 
 st.write(
-    "Enter customer information below to estimate the probability of churn."
+    "This interactive app uses machine learning to estimate "
+    "how likely a customer is to leave a telecommunications company. "
+    "It demonstrates how businesses can identify customers "
+    "who may need proactive retention support."
 )
 
 # Customer inputs
