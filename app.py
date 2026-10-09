@@ -5,7 +5,7 @@ import streamlit as st
 # Load saved model, feature columns, and decision threshold
 model = joblib.load("model/churn_model.joblib")
 feature_columns = joblib.load("model/feature_columns.joblib")
-threshold = joblib.load("model/decision_threshold.joblib")
+threshold = float(joblib.load("model/decision_threshold.joblib"))
 
 st.set_page_config(
     page_title="Customer Churn Risk Predictor",
@@ -81,6 +81,7 @@ input_encoded = input_encoded.reindex(
     fill_value=0
 )
 
+# Predict churn risk
 if st.button("Predict Churn Risk"):
 
     churn_probability = model.predict_proba(input_encoded)[:, 1][0]
@@ -92,5 +93,21 @@ if st.button("Predict Churn Risk"):
 
     if churn_probability >= threshold:
         st.error("High Churn Risk")
+        st.write(
+            "The predicted churn probability is at or above "
+            "the model's decision threshold. This customer "
+            "is therefore classified as higher risk."
+        )
     else:
         st.success("Low Churn Risk")
+        st.write(
+            "The predicted churn probability is below "
+            "the model's decision threshold. This customer "
+            "is therefore classified as lower risk."
+        )
+
+    st.caption(
+        f"Decision threshold: {threshold:.0%}. "
+        "This is a model-based estimate, not a certainty "
+        "that the customer will leave."
+    )
